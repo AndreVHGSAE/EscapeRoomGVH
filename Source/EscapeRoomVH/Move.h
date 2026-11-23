@@ -24,6 +24,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void SetShouldMove(bool moveValue);
+
+	bool GetShouldMove() const;
+
+	UPROPERTY(EditAnywhere)
+	bool shouldMove = false;
+
 	UPROPERTY(EditAnywhere)
 	FVector moveOffset;
 

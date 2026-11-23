@@ -11,9 +11,22 @@ UTriggerComponent::UTriggerComponent()
 void UTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	if (moveActor != nullptr)
+	{
+		moveComponent = moveActor->FindComponentByClass<UMove>();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("MOVE COMPONENT IS NULL"));
+	}
 
-	OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapBegin);
-	OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapEnd);
+	if (isPreasurePlate)
+	{
+		OnComponentBeginOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapBegin);
+		OnComponentEndOverlap.AddDynamic(this, &UTriggerComponent::OnOverlapEnd);
+	}
+
+	
 
 }
 
@@ -22,11 +35,24 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
+void UTriggerComponent::Trigger(bool triggerValue)
+{
+	isTriggered = triggerValue;
+	if (moveComponent)
+	{
+		moveComponent->SetShouldMove(isTriggered);
+	}
+}
+
 void UTriggerComponent::OnOverlapBegin(UPrimitiveComponent* overlapComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
 	if (otherActor && otherActor->ActorHasTag("Player"))
 	{
-		isTriggered = true;
+		activatorCount++;
+		if (!isTriggered && activatorCount == 1)
+		{
+			Trigger(true);
+		}
 		UE_LOG(LogTemp, Display, TEXT("On player overlap"));
 	}
 }
@@ -35,7 +61,11 @@ void UTriggerComponent::OnOverlapEnd(UPrimitiveComponent* overlapComp, AActor* o
 {
 	if (otherActor && otherActor->ActorHasTag("Player"))
 	{
-		isTriggered = false;
+		activatorCount--;
+		if (isTriggered && activatorCount == 0)
+		{
+			Trigger(false);
+		}
 		UE_LOG(LogTemp, Display, TEXT("end player Overlap"));
 	}
 }

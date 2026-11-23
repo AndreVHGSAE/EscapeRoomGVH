@@ -20,8 +20,8 @@ void UMove::BeginPlay()
 	Super::BeginPlay();
 
 	startLocation = GetOwner()->GetActorLocation();
-	targetLocation = startLocation + moveOffset;
-
+	SetShouldMove(false);
+	  
 	// ...
 	
 }
@@ -44,5 +44,23 @@ void UMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentT
 
 	}
 	// ...
+}
+
+void UMove::SetShouldMove(bool moveValue)
+{
+	shouldMove = moveValue;
+	if (shouldMove)
+	{
+		targetLocation = startLocation + moveOffset;
+	}
+	else
+	{
+		targetLocation = startLocation;
+	}
+}
+
+bool UMove::GetShouldMove() const
+{
+	return shouldMove;
 }
 
