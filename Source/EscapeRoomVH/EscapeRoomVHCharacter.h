@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "CollectableItem.h"
 #include "EscapeRoomVHCharacter.generated.h"
 
 class UInputComponent;
@@ -96,5 +97,7 @@ public:
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<FString> Inventory;
 };
 
